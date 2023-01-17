@@ -26,6 +26,8 @@ Feel free to contribute improving the code.
 
   5. Open [wordpress.local](https://wordpress.local/) in your browser.
 
+  6. Open [localhost:8080](http://localhost:8080) to access phpMyAdmin in your browser.
+
 
 # Reference
 * `./.docker/wordpress/php/php.ini`: https://github.com/php/php-src/blob/master/php.ini-development
