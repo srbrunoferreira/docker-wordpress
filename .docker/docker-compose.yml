@@ -1,9 +1,11 @@
 version: '3.8'
 
+name: wordpress_local
+
 services:
 
   wordpress:
-    container_name: ${APP_NAME}-wordpress
+    container_name: ${APP_NAME}_wordpress
     build: ./wordpress
     image: wordpress:php8.1-apache # https://hub.docker.com/_/wordpress
     restart: always
@@ -23,7 +25,7 @@ services:
       - mariadb
 
   mariadb:
-    container_name: ${APP_NAME}-mariadb
+    container_name: ${APP_NAME}_mariadb
     image: mariadb:10.6 #https://hub.docker.com/_/mariadb
     restart: always
     volumes:
@@ -35,7 +37,7 @@ services:
       - 3306:3306
 
   phpMyAdmin:
-    container_name: ${APP_NAME}-phpmyadmin
+    container_name: ${APP_NAME}_phpmyadmin
     image: phpmyadmin:5.2.0 # https://hub.docker.com/_/phpmyadmin
     restart: always
     ports:
@@ -51,5 +53,8 @@ services:
 
 volumes:
   wordpress:
+    name: ${APP_NAME}_wordpress
   mariadb:
+    name: ${APP_NAME}_mariadb
   phpMyAdmin:
+    name: ${APP_NAME}_phpmyadmin
