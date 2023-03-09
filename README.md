@@ -14,7 +14,7 @@ Feel free to contribute improving the code.
    1. In your host machine, install [mkcert](https://github.com/FiloSottile/mkcert).
       1. If you use WSL, you must [install mkcert with choco](https://github.com/FiloSottile/mkcert#windows) on Windows and **run every command of mkcert from the Windows terminal**. Otherwise, the browser won't recognize the certs.
 
-   2. Run: `mkcert -cert-file wordpress.local.pem, -key-file wordpress.local.key.pem wordpress.local localhost 127.0.0.1 ::1`
+   2. Run: `mkcert -cert-file wordpress.local.pem -key-file wordpress.local.key.pem wordpress.local localhost 127.0.0.1 ::1`
       1. Filename for the key must be wordpress.local.key.pem.
       2. Filename for the cert must be wordpress.local.pem.
       3. Otherwise, you'll need to change the 000-default.conf.
