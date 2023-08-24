@@ -37,6 +37,12 @@ Feel free to contribute improving the code.
 
 8. Open [localhost:8080](http://localhost:8080) to access phpMyAdmin in your browser.
 
+Command to run in wp-plugins for both host user and Docker be allowed to edit the files/folders:
+```
+sudo chgrp -R www-data wp-plugins/
+sudo find wp-plugins/ -type d -exec chmod 0775 {} \;
+sudo find wp-plugins/ -type f -exec chmod 0775 {} \;
+```
 
 # Reference
 * `./.docker/wordpress/php/php.ini`: https://github.com/php/php-src/blob/master/php.ini-development
