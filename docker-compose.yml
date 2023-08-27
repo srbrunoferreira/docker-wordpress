@@ -1,0 +1,64 @@
+version: '3.8'
+
+name: wordpress_local
+
+services:
+
+  wordpress:
+    container_name: wordpress
+    build: ./wordpress
+    image: wordpress:php8.1-apache # https://hub.docker.com/_/wordpress
+    restart: unless-stopped
+    ports:
+      - 80:80
+      - 443:443
+    environment:
+      WORDPRESS_DB_HOST: mariadb:3306
+      WORDPRESS_DB_NAME: ${WP_DB_NAME}
+      WORDPRESS_DB_USER: ${WP_DB_USER}
+      WORDPRESS_DB_PASSWORD: ${WP_DB_PASSWORD}
+      WORDPRESS_DEBUG: ${WP_DEBUG}
+      WP_ALLOW_MULTISITE: ${WP_ALLOW_MULTISITE}
+    volumes:
+      - wordpress:/var/www/html
+      - ./wordpress/apache/.htaccess:/var/www/html/.htaccess
+      - ./wordpress/wp-config.php:/var/www/html/wp-config.php
+      - ./wp-logs:/var/www/html/.apache
+      - ./wp-plugins:/var/www/html/wp-content/plugins
+      - ./wp-themes:/var/www/html/wp-content/themes
+    depends_on:
+      - mariadb
+
+  mariadb:
+    container_name: mariadb
+    image: mariadb:lts #https://hub.docker.com/_/mariadb
+    restart: unless-stopped
+    volumes:
+      - ./mariadb/data:/var/lib/mysql
+    environment:
+      MARIADB_USER: ${WP_DB_USER}
+      MARIADB_ROOT_PASSWORD: ${WP_DB_PASSWORD}
+      MARIADB_DATABASE: ${WP_DB_NAME}
+    ports:
+      - 3306:3306
+
+  phpMyAdmin:
+    container_name: phpmyadmin
+    image: phpmyadmin:5-apache # https://hub.docker.com/_/phpmyadmin
+    restart: unless-stopped
+    ports:
+      - 8080:80
+    volumes:
+      - phpmyadmin:/var/www/html
+    environment:
+      PMA_HOST: mariadb
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: root
+      UPLOAD_LIMIT: 1G
+    depends_on:
+      - mariadb
+
+volumes:
+  wordpress:
+  phpmyadmin:
+  mariadb:

@@ -1,2 +1,14 @@
-.docker/wordpress/apache/certs/*.pem
-.docker/.env
+.env
+*.pem
+
+wp-plugins/*
+!wp-plugins/.gitkeep
+
+mariadb/data/*
+!mariadb/data/.gitkeep
+
+wp-themes/*
+!wp-themes/.gitkeep
+
+wp-logs/*
+!wp-logs/.gitkeep
