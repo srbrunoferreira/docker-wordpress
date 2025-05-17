@@ -1,14 +1,11 @@
-version: '3.8'
-
-name: wordpress_local
+name: wordpress_local_${PROJECT_SUFFIX}
 
 services:
-
   wordpress:
-    container_name: wordpress
+    container_name: wordpress_${PROJECT_SUFFIX}
     build: ./wordpress
-    image: wordpress:6.7.2-php8.1-apache # https://hub.docker.com/_/wordpress
-    restart: unless-stopped
+    image: wordpress:6.8.1-php8.1-apache
+    restart: no
     ports:
       - 80:80
       - 443:443
@@ -18,9 +15,8 @@ services:
       WORDPRESS_DB_USER: ${WP_DB_USER}
       WORDPRESS_DB_PASSWORD: ${WP_DB_PASSWORD}
       WORDPRESS_DEBUG: ${WP_DEBUG}
-      WP_ALLOW_MULTISITE: ${WP_ALLOW_MULTISITE}
     volumes:
-      - wordpress:/var/www/html
+      - wordpress_vol:/var/www/html
       - ./wordpress/apache/.htaccess:/var/www/html/.htaccess
       - ./wordpress/wp-config.php:/var/www/html/wp-config.php
       - ./wp-logs:/var/www/html/.apache
@@ -28,37 +24,42 @@ services:
       - ./wp-themes:/var/www/html/wp-content/themes
     depends_on:
       - mariadb
+    mem_limit: 512m
+    cpus: 0.5
 
   mariadb:
-    container_name: mariadb
-    image: mariadb:11.4.5-noble #https://hub.docker.com/_/mariadb, https://endoflife.date/mariadb
-    restart: unless-stopped
+    container_name: mariadb_${PROJECT_SUFFIX}
+    image: mariadb:11.4.5-noble
+    restart: no
     volumes:
-      - ./mariadb/data:/var/lib/mysql
+      - mariadb_vol:/var/lib/mysql
     environment:
       MARIADB_USER: ${WP_DB_USER}
       MARIADB_ROOT_PASSWORD: ${WP_DB_PASSWORD}
       MARIADB_DATABASE: ${WP_DB_NAME}
-    ports:
-      - 3306:3306
+    mem_limit: 256m
+    cpus: 0.3
 
-  phpMyAdmin:
-    container_name: phpmyadmin
-    image: phpmyadmin:5.2.2-apache # https://hub.docker.com/_/phpmyadmin
-    restart: unless-stopped
+  phpmyadmin:
+    container_name: phpmyadmin_${PROJECT_SUFFIX}
+    build: ./phpmyadmin
+    restart: no
     ports:
-      - 8080:80
+      - ${PHPMYADMIN_PORT}:443
     volumes:
-      - phpmyadmin:/var/www/html
+      - phpmyadmin_vol:/var/www/html
+      - ./wordpress/apache/certs:/etc/apache2/ssl
     environment:
       PMA_HOST: mariadb
       PMA_PORT: 3306
-      MYSQL_ROOT_PASSWORD: root
+      MYSQL_ROOT_PASSWORD: ${WP_DB_PASSWORD}
       UPLOAD_LIMIT: 1G
     depends_on:
       - mariadb
+    mem_limit: 256m
+    cpus: 0.3
 
 volumes:
-  wordpress:
-  phpmyadmin:
-  mariadb:
+  phpmyadmin_vol:
+  wordpress_vol:
+  mariadb_vol:

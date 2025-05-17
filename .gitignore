@@ -4,9 +4,6 @@
 wp-plugins/*
 !wp-plugins/.gitkeep
 
-mariadb/data/*
-!mariadb/data/.gitkeep
-
 wp-themes/*
 !wp-themes/.gitkeep
 
